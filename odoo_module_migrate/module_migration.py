@@ -13,11 +13,13 @@ class ModuleMigration():
     _migration = False
     _module_name = False
     _module_path = False
+    _task_number = False
 
-    def __init__(self, migration, module_name):
+    def __init__(self, migration, module_name, task_number):
         self._migration = migration
         self._module_name = module_name
         self._module_path = self._migration._directory_path / module_name
+        self._task_number = task_number
 
     def run(self):
         logger.info("[%s] Running migration from %s to %s" % (
@@ -36,7 +38,8 @@ class ModuleMigration():
                                  self._migration._commit_enabled
                                  )
 
-        self._commit_changes("[MIG] %s: Migration to %s" % (
+        self._commit_changes("[MIG][%s] %s: Migration to %s" % (
+            self._task_number or '',
             self._module_name,
             self._migration._migration_steps[-1]["target_version_name"]))
 
@@ -77,6 +80,7 @@ class ModuleMigration():
                 ))
 
             _execute_shell(
-                " git add . --all && git commit --no-verify -m '%s'" % (
+                " git add %s && git commit --no-verify -m '%s'" % (
+                    self._module_name,
                     commit_name
                 ), path=self._migration._directory_path)
