@@ -39,6 +39,22 @@ def get_parser():
     )
 
     main_parser.add_argument(
+        "-tn",
+        "--task",
+        dest="task",
+        type=str,
+        help="Task Number",
+    )
+
+    main_parser.add_argument(
+        "-ec",
+        "--emp-code",
+        dest="emp_code",
+        type=str,
+        help="Employee Code",
+    )
+
+    main_parser.add_argument(
         "-i",
         "--init-version-name",
         choices=tools._get_available_init_version_names(),
@@ -130,7 +146,7 @@ def main(args=False):
         migration = Migration(
             args.directory, args.init_version_name, args.target_version_name,
             module_names, args.format_patch, args.remote_name,
-            not args.no_commit, args.pre_commit,
+            not args.no_commit, args.pre_commit, args.task, args.emp_code
         )
 
         # run Migration

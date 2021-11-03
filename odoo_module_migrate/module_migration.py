@@ -38,8 +38,8 @@ class ModuleMigration():
                                  self._migration._commit_enabled
                                  )
 
-        self._commit_changes("[MIG][%s] %s: Migration to %s" % (
-            self._task_number or '',
+        self._commit_changes("[MIG]%s %s: Migration to %s" % (
+            self._task_number and ("[%s]" % (self._task_number)) or '',
             self._module_name,
             self._migration._migration_steps[-1]["target_version_name"]))
 

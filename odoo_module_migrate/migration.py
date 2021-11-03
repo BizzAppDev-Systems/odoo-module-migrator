@@ -21,7 +21,7 @@ class Migration:
     def __init__(
         self, relative_directory_path, init_version_name, target_version_name,
         module_names=None, format_patch=False, remote_name='origin',
-        commit_enabled=True, pre_commit=True, task_number=False
+        commit_enabled=True, pre_commit=True, task_number=False, emp_code=False
     ):
         if not module_names:
             module_names = []
@@ -32,6 +32,7 @@ class Migration:
         self._module_migrations = []
         self._directory_path = False
         self._task_number = task_number
+        self._emp_code = emp_code
 
         # Get migration steps that will be runned
         found = False
@@ -121,10 +122,11 @@ class Migration:
     def _get_code_from_previous_branch(self, module_name, remote_name):
         init_version = self._migration_steps[0]["init_version_name"]
         target_version = self._migration_steps[-1]["target_version_name"]
-        branch_name = "%(version)s-%(task_number)s-mig-%(module_name)s" % {
+        branch_name = "%(version)s%(task_number)s-mig-%(module_name)s%(emp_code)s" % {
             'version': target_version,
-            'task_number': self._task_number or '',
-            'module_name': module_name}
+            'task_number': self._task_number and ("-%s" % (self._task_number)) or '',
+            'module_name': module_name,
+            'emp_code': self._emp_code and ("-%s" % (self._emp_code)) or ''}
 
         logger.info("Creating new branch '%s' ..." % (branch_name))
         _execute_shell(
